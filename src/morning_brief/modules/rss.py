@@ -72,7 +72,9 @@ class DailyFirehoseModule:
                 body=f"Daily Firehose API response could not be parsed: {exc}",
             )
 
-        return BriefSection(title="RSS Feed Updates", body=format_rss_articles(articles))
+        return BriefSection(
+            title="RSS Feed Updates", body=format_rss_articles(articles)
+        )
 
 
 def fetch_daily_firehose_articles(

@@ -36,10 +36,14 @@ def test_format_rss_articles_uses_save_links() -> None:
 
     output = rss.format_rss_articles(articles)
 
-    assert "[An article](https://daily-firehose.example.com/save) — Example Feed" in output
+    assert (
+        "[An article](https://daily-firehose.example.com/save) — Example Feed" in output
+    )
 
 
 def test_format_rss_articles_handles_empty_list() -> None:
     rss = import_module("morning_brief.modules.rss")
 
-    assert rss.format_rss_articles([]) == "No new unread articles in Daily Firehose today."
+    assert (
+        rss.format_rss_articles([]) == "No new unread articles in Daily Firehose today."
+    )
