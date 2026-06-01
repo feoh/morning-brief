@@ -22,6 +22,26 @@ def test_signed_save_and_go_url() -> None:
     ]
 
 
+def test_signed_mark_period_read_url() -> None:
+    rss = import_module("morning_brief.modules.rss")
+
+    url = rss.signed_mark_period_read_url(
+        public_url="https://daily-firehose.example.com",
+        scope="day",
+        agent_link_secret="test-secret",
+    )
+
+    parsed = urlparse(url)
+    assert parsed.scheme == "https"
+    assert parsed.netloc == "daily-firehose.example.com"
+    assert parsed.path == "/api/v1/mark-period-read-and-go/"
+    query = parse_qs(parsed.query)
+    assert query["scope"] == ["day"]
+    assert query["sig"] == [
+        "3a9ed99435abd69bc28a2be047620c676a663a9dae4164e74db32e5672b8d0f6"
+    ]
+
+
 def test_format_rss_articles_uses_save_links() -> None:
     rss = import_module("morning_brief.modules.rss")
     articles = [
@@ -34,10 +54,17 @@ def test_format_rss_articles_uses_save_links() -> None:
         )
     ]
 
-    output = rss.format_rss_articles(articles)
+    output = rss.format_rss_articles(
+        articles,
+        mark_read_url="https://daily-firehose.example.com/mark-period-read-and-go",
+    )
 
     assert (
         "[An article](https://daily-firehose.example.com/save) — Example Feed" in output
+    )
+    assert (
+        "[Mark all of today's articles as read]"
+        "(https://daily-firehose.example.com/mark-period-read-and-go)" in output
     )
 
 

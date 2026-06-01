@@ -2,9 +2,9 @@
 
 from __future__ import annotations
 
+from datetime import UTC, datetime
 from dataclasses import dataclass
 import hmac
-from datetime import UTC, datetime
 from typing import Any
 from urllib.parse import urlencode
 
@@ -72,8 +72,17 @@ class DailyFirehoseModule:
                 body=f"Daily Firehose API response could not be parsed: {exc}",
             )
 
+        mark_read_url = None
+        if self.agent_link_secret:
+            mark_read_url = signed_mark_period_read_url(
+                public_url=self.public_url,
+                scope="day",
+                agent_link_secret=self.agent_link_secret,
+            )
+
         return BriefSection(
-            title="RSS Feed Updates", body=format_rss_articles(articles)
+            title="RSS Feed Updates",
+            body=format_rss_articles(articles, mark_read_url=mark_read_url),
         )
 
 
@@ -144,7 +153,23 @@ def signed_save_and_go_url(
     return f"{public_url.rstrip('/')}/api/v1/articles/{article_id}/save-and-go/?{query}"
 
 
-def format_rss_articles(articles: list[RssArticle]) -> str:
+def signed_mark_period_read_url(
+    *, public_url: str, scope: str, agent_link_secret: str
+) -> str:
+    """Build a Daily Firehose link that marks a period read."""
+
+    signature = hmac.new(
+        agent_link_secret.encode(),
+        f"mark-period-read:{scope}".encode(),
+        "sha256",
+    ).hexdigest()
+    query = urlencode({"scope": scope, "sig": signature})
+    return f"{public_url.rstrip('/')}/api/v1/mark-period-read-and-go/?{query}"
+
+
+def format_rss_articles(
+    articles: list[RssArticle], *, mark_read_url: str | None = None
+) -> str:
     """Format RSS articles as Discord-friendly Markdown."""
 
     if not articles:
@@ -154,4 +179,6 @@ def format_rss_articles(articles: list[RssArticle]) -> str:
     for article in articles:
         target = article.save_url or article.url
         lines.append(f"- [{article.title}]({target}) — {article.feed_title}")
+    if mark_read_url:
+        lines.extend(["", f"[Mark all of today's articles as read]({mark_read_url})"])
     return "\n".join(lines)
