@@ -1,5 +1,7 @@
 # Morning Brief
 
+![Morning Brief screenshot](docs/images/morning-brief.png)
+
 Morning Brief is a modular daily briefing tool. It currently builds a market update for AMZN, GOOG, AAPL, MSFT, Bitcoin, and Ethereum, includes top news headlines and today's new Daily Firehose RSS articles, then can post it to Discord.
 
 ## Setup
