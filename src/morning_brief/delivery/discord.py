@@ -37,19 +37,31 @@ def send_discord_message(bot_token: str, channel_id: str, content: str) -> None:
 def _chunk_message(content: str) -> list[str]:
     """Split long messages to stay below Discord's message-size limit."""
 
-    if len(content) <= DISCORD_MESSAGE_LIMIT:
-        return [content]
-
     chunks: list[str] = []
     current = ""
-    for paragraph in content.split("\n\n"):
-        candidate = f"{current}\n\n{paragraph}" if current else paragraph
+    for block in _message_blocks(content):
+        candidate = f"{current}\n{block}" if current else block
         if len(candidate) > DISCORD_MESSAGE_LIMIT:
             if current:
                 chunks.append(current)
-            current = paragraph
+            current = block
         else:
             current = candidate
     if current:
         chunks.append(current)
     return chunks
+
+
+def _message_blocks(content: str) -> list[str]:
+    """Return chunks no larger than the Discord message limit, preferring line breaks."""
+
+    blocks: list[str] = []
+    for line in content.splitlines():
+        if len(line) <= DISCORD_MESSAGE_LIMIT:
+            blocks.append(line)
+            continue
+        blocks.extend(
+            line[start : start + DISCORD_MESSAGE_LIMIT]
+            for start in range(0, len(line), DISCORD_MESSAGE_LIMIT)
+        )
+    return blocks
