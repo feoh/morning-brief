@@ -14,10 +14,12 @@ def default_modules() -> list[BriefingModule]:
 
     config_module = import_module("morning_brief.config")
     markets_module = import_module("morning_brief.modules.markets")
+    news_module = import_module("morning_brief.modules.news")
     rss_module = import_module("morning_brief.modules.rss")
     config = config_module.load_config()
     return [
         markets_module.MarketsModule(),
+        news_module.TopNewsModule(headline_limit=config.news_headline_limit),
         rss_module.DailyFirehoseModule(
             api_url=config.daily_firehose_api_url,
             public_url=config.daily_firehose_public_url,

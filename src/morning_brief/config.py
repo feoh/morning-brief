@@ -9,6 +9,7 @@ from pathlib import Path
 DEFAULT_DAILY_FIREHOSE_API_URL = "http://127.0.0.1:8000"
 DEFAULT_DAILY_FIREHOSE_PUBLIC_URL = "https://daily-firehose.reedfish-regulus.ts.net"
 DEFAULT_DISCORD_CHANNEL_ID = "1510832637407662142"
+DEFAULT_NEWS_HEADLINE_LIMIT = 5
 DEFAULT_RSS_ARTICLE_LIMIT = 20
 DEFAULT_SCHEDULE_TIME = "06:00"
 DEFAULT_TIMEZONE = "America/New_York"
@@ -25,6 +26,7 @@ class Config:
     daily_firehose_api_token: str | None = None
     agent_link_secret: str | None = None
     rss_article_limit: int = DEFAULT_RSS_ARTICLE_LIMIT
+    news_headline_limit: int = DEFAULT_NEWS_HEADLINE_LIMIT
     schedule_time: str = DEFAULT_SCHEDULE_TIME
     timezone: str = DEFAULT_TIMEZONE
 
@@ -67,6 +69,12 @@ def load_config(env_file: Path | None = None) -> Config:
         agent_link_secret=os.getenv("AGENT_LINK_SECRET"),
         rss_article_limit=int(
             os.getenv("MORNING_BRIEF_RSS_ARTICLE_LIMIT", str(DEFAULT_RSS_ARTICLE_LIMIT))
+        ),
+        news_headline_limit=int(
+            os.getenv(
+                "MORNING_BRIEF_NEWS_HEADLINE_LIMIT",
+                str(DEFAULT_NEWS_HEADLINE_LIMIT),
+            )
         ),
         schedule_time=os.getenv("MORNING_BRIEF_TIME", DEFAULT_SCHEDULE_TIME),
         timezone=os.getenv("MORNING_BRIEF_TIMEZONE", DEFAULT_TIMEZONE),
