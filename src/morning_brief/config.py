@@ -6,7 +6,10 @@ from dataclasses import dataclass
 import os
 from pathlib import Path
 
+DEFAULT_DAILY_FIREHOSE_API_URL = "http://127.0.0.1:8000"
+DEFAULT_DAILY_FIREHOSE_PUBLIC_URL = "https://daily-firehose.reedfish-regulus.ts.net"
 DEFAULT_DISCORD_CHANNEL_ID = "1510832637407662142"
+DEFAULT_RSS_ARTICLE_LIMIT = 20
 DEFAULT_SCHEDULE_TIME = "06:00"
 DEFAULT_TIMEZONE = "America/New_York"
 
@@ -17,6 +20,11 @@ class Config:
 
     discord_bot_token: str | None
     discord_channel_id: str = DEFAULT_DISCORD_CHANNEL_ID
+    daily_firehose_api_url: str = DEFAULT_DAILY_FIREHOSE_API_URL
+    daily_firehose_public_url: str = DEFAULT_DAILY_FIREHOSE_PUBLIC_URL
+    daily_firehose_api_token: str | None = None
+    agent_link_secret: str | None = None
+    rss_article_limit: int = DEFAULT_RSS_ARTICLE_LIMIT
     schedule_time: str = DEFAULT_SCHEDULE_TIME
     timezone: str = DEFAULT_TIMEZONE
 
@@ -49,6 +57,17 @@ def load_config(env_file: Path | None = None) -> Config:
     return Config(
         discord_bot_token=os.getenv("DISCORD_BOT_TOKEN"),
         discord_channel_id=os.getenv("DISCORD_CHANNEL_ID", DEFAULT_DISCORD_CHANNEL_ID),
+        daily_firehose_api_url=os.getenv(
+            "DAILY_FIREHOSE_API_URL", DEFAULT_DAILY_FIREHOSE_API_URL
+        ).rstrip("/"),
+        daily_firehose_public_url=os.getenv(
+            "DAILY_FIREHOSE_PUBLIC_URL", DEFAULT_DAILY_FIREHOSE_PUBLIC_URL
+        ).rstrip("/"),
+        daily_firehose_api_token=os.getenv("DAILY_FIREHOSE_API_TOKEN"),
+        agent_link_secret=os.getenv("AGENT_LINK_SECRET"),
+        rss_article_limit=int(
+            os.getenv("MORNING_BRIEF_RSS_ARTICLE_LIMIT", str(DEFAULT_RSS_ARTICLE_LIMIT))
+        ),
         schedule_time=os.getenv("MORNING_BRIEF_TIME", DEFAULT_SCHEDULE_TIME),
         timezone=os.getenv("MORNING_BRIEF_TIMEZONE", DEFAULT_TIMEZONE),
     )

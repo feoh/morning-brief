@@ -12,8 +12,20 @@ from .modules.base import BriefingModule
 def default_modules() -> list[BriefingModule]:
     """Return the currently enabled briefing modules."""
 
+    config_module = import_module("morning_brief.config")
     markets_module = import_module("morning_brief.modules.markets")
-    return [markets_module.MarketsModule()]
+    rss_module = import_module("morning_brief.modules.rss")
+    config = config_module.load_config()
+    return [
+        markets_module.MarketsModule(),
+        rss_module.DailyFirehoseModule(
+            api_url=config.daily_firehose_api_url,
+            public_url=config.daily_firehose_public_url,
+            api_token=config.daily_firehose_api_token,
+            agent_link_secret=config.agent_link_secret,
+            article_limit=config.rss_article_limit,
+        ),
+    ]
 
 
 def build_brief(modules: list[BriefingModule] | None = None) -> str:

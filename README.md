@@ -1,6 +1,6 @@
 # Morning Brief
 
-Morning Brief is a modular daily briefing tool. It currently builds a market update for AMZN, GOOG, AAPL, MSFT, Bitcoin, and Ethereum, then can post it to Discord.
+Morning Brief is a modular daily briefing tool. It currently builds a market update for AMZN, GOOG, AAPL, MSFT, Bitcoin, and Ethereum, includes today's new Daily Firehose RSS articles, then can post it to Discord.
 
 ## Setup
 
@@ -18,6 +18,8 @@ The default Discord channel is `#morning-brief`:
 ```
 
 Override it with `DISCORD_CHANNEL_ID` only if the channel changes.
+
+For RSS articles, set `DAILY_FIREHOSE_API_TOKEN` to a Daily Firehose bearer token and set the same `AGENT_LINK_SECRET` in both Morning Brief and Daily Firehose. Morning Brief fetches articles from `DAILY_FIREHOSE_API_URL` and creates signed public `save-and-go` links using `DAILY_FIREHOSE_PUBLIC_URL`. Clicking an RSS article link saves it through Daily Firehose, then redirects to the article.
 
 ## Usage
 
@@ -75,4 +77,5 @@ Delivery backends live under `morning_brief.delivery`.
 
 - Secrets belong in `.env`; do not commit them.
 - Market data comes from Yahoo Finance's chart API via `requests`.
+- RSS article data comes from the local Daily Firehose API.
 - `docs/implementation-plan.md` contains the agreed initial implementation plan.
