@@ -63,11 +63,36 @@ def test_select_top_headlines_diversifies_bias_source_and_dedupes_titles() -> No
     other_neutral = news.NewsSource("BBC", "https://example.com/bbc", "neutral")
     headlines = [
         news.NewsHeadline("Shared Story!", "https://example.com/1", neutral, now),
-        news.NewsHeadline("Liberal Story", "https://example.com/2", liberal, now - timedelta(minutes=1)),
-        news.NewsHeadline("Conservative Story", "https://example.com/3", conservative, now - timedelta(minutes=2)),
-        news.NewsHeadline("Shared story", "https://example.com/4", other_neutral, now - timedelta(minutes=3)),
-        news.NewsHeadline("World Story", "https://example.com/5", other_neutral, now - timedelta(minutes=4)),
-        news.NewsHeadline("Another Story", "https://example.com/6", neutral, now - timedelta(minutes=5)),
+        news.NewsHeadline(
+            "Liberal Story",
+            "https://example.com/2",
+            liberal,
+            now - timedelta(minutes=1),
+        ),
+        news.NewsHeadline(
+            "Conservative Story",
+            "https://example.com/3",
+            conservative,
+            now - timedelta(minutes=2),
+        ),
+        news.NewsHeadline(
+            "Shared story",
+            "https://example.com/4",
+            other_neutral,
+            now - timedelta(minutes=3),
+        ),
+        news.NewsHeadline(
+            "World Story",
+            "https://example.com/5",
+            other_neutral,
+            now - timedelta(minutes=4),
+        ),
+        news.NewsHeadline(
+            "Another Story",
+            "https://example.com/6",
+            neutral,
+            now - timedelta(minutes=5),
+        ),
     ]
 
     selected = news.select_top_headlines(headlines, limit=5)
@@ -104,4 +129,7 @@ def test_format_headlines_includes_bias_icons() -> None:
 def test_format_headlines_handles_empty_list() -> None:
     news = _news()
 
-    assert news.format_headlines([]) == "No recent headlines found across the curated news sources."
+    assert (
+        news.format_headlines([])
+        == "No recent headlines found across the curated news sources."
+    )

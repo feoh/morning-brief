@@ -50,7 +50,9 @@ class NewsHeadline:
 
 
 DEFAULT_NEWS_SOURCES = (
-    NewsSource("AP Top News", "https://apnews.com/hub/ap-top-news?output=rss", "neutral"),
+    NewsSource(
+        "AP Top News", "https://apnews.com/hub/ap-top-news?output=rss", "neutral"
+    ),
     NewsSource("BBC World", "https://feeds.bbci.co.uk/news/world/rss.xml", "neutral"),
     NewsSource(
         "Reuters World",
@@ -64,7 +66,9 @@ DEFAULT_NEWS_SOURCES = (
         "https://moxie.foxnews.com/google-publisher/politics.xml",
         "conservative",
     ),
-    NewsSource("National Review", "https://www.nationalreview.com/feed/", "conservative"),
+    NewsSource(
+        "National Review", "https://www.nationalreview.com/feed/", "conservative"
+    ),
 )
 
 
@@ -108,7 +112,9 @@ def fetch_all_headlines(sources: tuple[NewsSource, ...]) -> list[NewsHeadline]:
     return headlines
 
 
-def fetch_source_headlines(source: NewsSource, per_source_limit: int = 5) -> list[NewsHeadline]:
+def fetch_source_headlines(
+    source: NewsSource, per_source_limit: int = 5
+) -> list[NewsHeadline]:
     """Fetch and parse headlines from one RSS/Atom source."""
 
     response = requests.get(
@@ -132,7 +138,9 @@ def parse_feed(content: str, source: NewsSource) -> list[NewsHeadline]:
     return [_headline_from_atom_entry(entry, source) for entry in entries]
 
 
-def select_top_headlines(headlines: list[NewsHeadline], limit: int = 5) -> list[NewsHeadline]:
+def select_top_headlines(
+    headlines: list[NewsHeadline], limit: int = 5
+) -> list[NewsHeadline]:
     """Select a diverse set of recent headlines across source leanings."""
 
     remaining = sorted(headlines, key=_headline_sort_key, reverse=True)
@@ -151,8 +159,10 @@ def select_top_headlines(headlines: list[NewsHeadline], limit: int = 5) -> list[
     while len(selected) < limit and remaining:
         candidate = _pop_first_matching(
             remaining,
-            lambda headline: _normalized_title(headline.title) not in seen_titles
-            and headline.source.name not in seen_sources,
+            lambda headline: (
+                _normalized_title(headline.title) not in seen_titles
+                and headline.source.name not in seen_sources
+            ),
         ) or _pop_first_matching(
             remaining,
             lambda headline: _normalized_title(headline.title) not in seen_titles,
@@ -224,7 +234,9 @@ def _headline_from_atom_entry(entry: ET.Element, source: NewsSource) -> NewsHead
     title = _namespaced_text(entry, "title") or "Untitled"
     link = entry.find("{http://www.w3.org/2005/Atom}link")
     url = link.attrib.get("href", "") if link is not None else ""
-    published = _namespaced_text(entry, "published") or _namespaced_text(entry, "updated")
+    published = _namespaced_text(entry, "published") or _namespaced_text(
+        entry, "updated"
+    )
     return NewsHeadline(
         title=html.unescape(title.strip()),
         url=url.strip(),

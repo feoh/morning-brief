@@ -5,7 +5,9 @@ from importlib import import_module
 
 def test_chunk_message_splits_long_line_based_content() -> None:
     discord = import_module("morning_brief.delivery.discord")
-    content = "# Heading\n" + "\n".join(f"- item {index} " + "x" * 100 for index in range(50))
+    content = "# Heading\n" + "\n".join(
+        f"- item {index} " + "x" * 100 for index in range(50)
+    )
 
     chunks = discord._chunk_message(content)
 
