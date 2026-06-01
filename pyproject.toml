@@ -1,0 +1,23 @@
+[project]
+name = "morning-brief"
+version = "0.1.0"
+description = "Modular daily morning briefing delivered to Discord."
+readme = "README.md"
+authors = [{ name = "Christopher Patti", email = "feoh@feoh.org" }]
+requires-python = ">=3.12"
+dependencies = ["cyclopts>=4.16.1", "requests>=2.34.2"]
+
+[project.scripts]
+morning-brief = "morning_brief.cli:app"
+
+[build-system]
+requires = ["uv_build>=0.9.18,<0.10.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+  "mypy>=2.1.0",
+  "pre-commit>=4.6.0",
+  "pytest>=9.0.3",
+  "types-requests>=2.33.0.20260518",
+]
