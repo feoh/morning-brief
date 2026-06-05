@@ -2,7 +2,7 @@
 
 ![Morning Brief screenshot](docs/images/morning-brief.png)
 
-Morning Brief is a modular daily briefing tool. It currently builds a market update for AMZN, GOOG, AAPL, MSFT, Bitcoin, and Ethereum, includes top news headlines and today's new Daily Firehose RSS articles, then can post it to Discord.
+Morning Brief is a modular daily briefing tool. It currently builds a market update for AMZN, GOOG, AAPL, MSFT, Bitcoin, and Ethereum, includes top news headlines, today's new Daily Firehose RSS articles, and Todoist tasks due within the next week or overdue, then can post it to Discord.
 
 ## Setup
 
@@ -30,6 +30,8 @@ Top news headlines come from curated RSS sources with source-level leaning metad
 - ⚪ neutral / wire / international source
 
 Set `MORNING_BRIEF_NEWS_HEADLINE_LIMIT` to change the default top-news count from 5.
+
+For Todoist tasks, set `TODOIST_API_TOKEN` (or `TODOIST_API_KEY`) to a Todoist API token. Morning Brief includes active tasks that are overdue or due within the next 7 days. Set `MORNING_BRIEF_TODOIST_TASK_LIMIT` to change the default task count from 20.
 
 ## Usage
 
@@ -89,4 +91,5 @@ Delivery backends live under `morning_brief.delivery`.
 - Market data comes from Yahoo Finance's chart API via `requests`.
 - Top news headlines come from curated RSS feeds across left-leaning, right-leaning, neutral, wire, and international sources.
 - RSS article data comes from the local Daily Firehose API.
+- Todoist task data comes from Todoist's REST API.
 - `docs/implementation-plan.md` contains the agreed initial implementation plan.

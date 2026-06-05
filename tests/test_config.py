@@ -13,6 +13,8 @@ def test_load_config_defaults(tmp_path: Path, monkeypatch: Any) -> None:
     monkeypatch.delenv("DISCORD_BOT_TOKEN", raising=False)
     monkeypatch.delenv("DISCORD_CHANNEL_ID", raising=False)
     monkeypatch.delenv("DAILY_FIREHOSE_API_TOKEN", raising=False)
+    monkeypatch.delenv("TODOIST_API_TOKEN", raising=False)
+    monkeypatch.delenv("TODOIST_API_KEY", raising=False)
     config_module = _config_module()
 
     config = config_module.load_config(tmp_path / ".env")
@@ -21,12 +23,15 @@ def test_load_config_defaults(tmp_path: Path, monkeypatch: Any) -> None:
     assert config.discord_channel_id == config_module.DEFAULT_DISCORD_CHANNEL_ID
     assert config.daily_firehose_api_url == config_module.DEFAULT_DAILY_FIREHOSE_API_URL
     assert config.daily_firehose_api_token is None
+    assert config.todoist_api_token is None
 
 
 def test_load_config_from_env_file(tmp_path: Path, monkeypatch: Any) -> None:
     monkeypatch.delenv("DISCORD_BOT_TOKEN", raising=False)
     monkeypatch.delenv("DISCORD_CHANNEL_ID", raising=False)
     monkeypatch.delenv("DAILY_FIREHOSE_API_TOKEN", raising=False)
+    monkeypatch.delenv("TODOIST_API_TOKEN", raising=False)
+    monkeypatch.delenv("TODOIST_API_KEY", raising=False)
     env_file = tmp_path / ".env"
     env_file.write_text(
         "DISCORD_BOT_TOKEN=test-token\n"
@@ -34,6 +39,8 @@ def test_load_config_from_env_file(tmp_path: Path, monkeypatch: Any) -> None:
         "DAILY_FIREHOSE_API_TOKEN=api-token\n"
         "AGENT_LINK_SECRET=link-secret\n"
         "MORNING_BRIEF_RSS_ARTICLE_LIMIT=5\n"
+        "TODOIST_API_TOKEN=todoist-token\n"
+        "MORNING_BRIEF_TODOIST_TASK_LIMIT=7\n"
         "MORNING_BRIEF_TIME=07:15\n"
     )
     config_module = _config_module()
@@ -45,4 +52,6 @@ def test_load_config_from_env_file(tmp_path: Path, monkeypatch: Any) -> None:
     assert config.daily_firehose_api_token == "api-token"
     assert config.agent_link_secret == "link-secret"
     assert config.rss_article_limit == 5
+    assert config.todoist_api_token == "todoist-token"
+    assert config.todoist_task_limit == 7
     assert config.schedule_time == "07:15"
